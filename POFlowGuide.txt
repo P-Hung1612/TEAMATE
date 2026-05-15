@@ -1,0 +1,793 @@
+# Hướng Dẫn Cho Product Owner / Repo Owner
+
+## Mục tiêu
+
+Repo Owner chịu trách nhiệm:
+
+* giữ codebase ổn định
+* quản lý workflow
+* review Pull Request
+* tránh conflict và chaos trong repo
+* đảm bảo branch structure sạch
+
+Repo Owner KHÔNG nên:
+
+* code trực tiếp lung tung trên nhiều branch
+* merge bừa
+* để workflow thiếu quy tắc
+
+---
+
+# Vai Trò Của Repo Owner
+
+## Repo Owner nên:
+
+```text
+- quản lý branch
+- quản lý release
+- review code
+- merge PR
+- define workflow
+- assign task
+- giữ consistency cho codebase
+```
+
+---
+
+# Branch Structure Chuẩn
+
+## Recommended
+
+```text
+main
+└── dev
+    ├── feature/*
+    ├── fix/*
+    └── refactor/*
+```
+
+---
+
+# Ý Nghĩa Từng Branch
+
+## main
+
+```text
+Production stable code
+```
+
+Chỉ chứa:
+
+* code ổn định
+* release stable
+* code deploy được
+
+---
+
+## dev
+
+```text
+Integration branch
+```
+
+Nơi:
+
+* merge các feature
+* test integration
+* chuẩn bị release
+
+---
+
+## feature/*
+
+```text
+Feature riêng lẻ
+```
+
+Ví dụ:
+
+```text
+feature/login-ui
+feature/navbar
+feature/auth-api
+```
+
+---
+
+# Repo Owner NÊN Làm
+
+# 1. Protect main
+
+NÊN:
+
+```text
+main phải protected
+```
+
+Không cho collaborator push trực tiếp.
+
+---
+
+# 2. Protect dev
+
+Recommended:
+
+```text
+dev chỉ merge qua PR
+```
+
+Giúp:
+
+* review code
+* giảm bug
+* tránh push nhầm
+
+---
+
+# 3. Yêu cầu dùng Feature Branch
+
+Mỗi task:
+
+```text
+1 feature = 1 branch
+```
+
+GOOD:
+
+```text
+feature/login-ui
+feature/todo-create
+fix/navbar-mobile
+```
+
+BAD:
+
+```text
+feature/all
+feature/update
+```
+
+---
+
+# 4. Review Pull Request
+
+Trước khi merge:
+
+## Kiểm tra:
+
+* app có chạy không
+* code có đúng task không
+* có sửa file không liên quan không
+* có conflict tiềm ẩn không
+* naming có consistent không
+* có file rác không
+
+---
+
+# 5. Merge Feature Nhỏ
+
+NÊN:
+
+```text
+merge nhiều PR nhỏ
+```
+
+KHÔNG:
+
+```text
+merge 1 PR khổng lồ
+```
+
+---
+
+# 6. Giữ main Luôn Stable
+
+Rule:
+
+```text
+main phải luôn deploy được
+```
+
+Nếu branch main:
+
+* build fail
+* app crash
+* dependency lỗi
+
+=> workflow đang có vấn đề.
+
+---
+
+# 7. Sync dev Với main
+
+Sau hotfix hoặc release:
+
+```bash
+git checkout dev
+```
+
+```bash
+git merge main
+```
+
+```bash
+git push origin dev
+```
+
+Giúp:
+
+* tránh lệch branch
+* tránh missing fix
+
+---
+
+# 8. Assign Task Rõ Ràng
+
+GOOD:
+
+```text
+- Login UI
+- Auth API
+- Navbar mobile responsive
+```
+
+BAD:
+
+```text
+- làm frontend
+- sửa app
+```
+
+Task càng rõ:
+
+* PR càng nhỏ
+* review càng dễ
+* conflict càng ít
+
+---
+
+# 9. Yêu Cầu Commit Message Chuẩn
+
+Ví dụ:
+
+```text
+feat: create login form
+fix: validate email input
+refactor: extract auth service
+```
+
+KHÔNG:
+
+```text
+update
+fix
+done
+123
+```
+
+---
+
+# 10. Delete Feature Branch Sau Merge
+
+Sau khi merge:
+
+```text
+feature branch nên được xoá
+```
+
+Ví dụ:
+
+```bash
+git branch -d feature/login-ui
+```
+
+Remote:
+
+```bash
+git push origin --delete feature/login-ui
+```
+
+Giúp repo sạch.
+
+---
+
+# Repo Owner KHÔNG NÊN Làm
+
+# 1. Không Code Trực Tiếp Trên main
+
+BAD:
+
+```bash
+git checkout main
+```
+
+rồi code trực tiếp.
+
+---
+
+# 2. Không Dùng dev Như Feature Branch
+
+BAD:
+
+```text
+dev = nơi code lung tung
+```
+
+`dev` nên là:
+
+```text
+integration branch
+```
+
+Không phải sandbox cá nhân.
+
+---
+
+# 3. Không Để Branch Diverge Quá Xa
+
+KHÔNG:
+
+```text
+main và dev khác cấu trúc repo
+```
+
+Ví dụ BAD:
+
+```text
+- main có LICENSE
+- dev không có LICENSE
+```
+
+Hoặc:
+
+```text
+- package.json khác lớn
+- config khác hoàn toàn
+```
+
+Điều này gây:
+
+* merge conflict
+* CI/CD lỗi
+* sync khó
+
+---
+
+# 4. Không Merge PR Chưa Review
+
+Không nên:
+
+```text
+"thấy chạy là merge"
+```
+
+Cần check:
+
+* logic
+* structure
+* file thay đổi
+* ảnh hưởng side effect
+
+---
+
+# 5. Không Để PR Quá To
+
+BAD:
+
+```text
+1 PR = login + navbar + dark mode + api
+```
+
+GOOD:
+
+```text
+1 PR = 1 mục tiêu
+```
+
+---
+
+# 6. Không Force Push Lung Tung
+
+KHÔNG:
+
+```bash
+git push --force
+```
+
+trên:
+
+```text
+main
+dev
+```
+
+trừ khi:
+
+* emergency
+* hiểu rõ history rewrite
+
+---
+
+# 7. Không Đổi Workflow Liên Tục
+
+Nếu hôm nay:
+
+```text
+feature branch
+```
+
+mai:
+
+```text
+push thẳng dev
+```
+
+team sẽ rất rối.
+
+Workflow cần consistency.
+
+---
+
+# Product Owner Flow
+
+## Flow Tổng Quan
+
+```text
+Idea
+↓
+Define feature/task
+↓
+Breakdown task
+↓
+Assign task cho dev
+↓
+Dev tạo feature branch
+↓
+Dev tạo PR vào dev
+↓
+PO review/testing
+↓
+Merge vào dev
+↓
+Integration test
+↓
+Merge dev → main
+↓
+Release
+```
+
+---
+
+# 1. Define Feature
+
+PO cần:
+
+```text
+- xác định feature cần làm
+- xác định mục tiêu feature
+- xác định scope
+```
+
+Ví dụ GOOD:
+
+```text
+Feature: Login UI
+
+Goal:
+Người dùng có thể nhập email/password để đăng nhập.
+
+Requirements:
+- email input
+- password input
+- login button
+- responsive mobile
+```
+
+BAD:
+
+```text
+"làm login đi"
+```
+
+---
+
+# 2. Breakdown Task
+
+PO KHÔNG nên giao task quá lớn.
+
+BAD:
+
+```text
+Làm authentication system
+```
+
+GOOD:
+
+```text
+- Login UI
+- Register UI
+- Login API
+- JWT middleware
+- Forgot password
+```
+
+---
+
+# 3. Assign Task
+
+Ví dụ:
+
+| Task      | Dev   |
+| --------- | ----- |
+| Login UI  | Dev A |
+| Login API | Dev B |
+| Navbar    | Dev C |
+
+---
+
+# 4. Define Branch Naming
+
+PO cần yêu cầu:
+
+```text
+feature/<feature-name>
+fix/<bug-name>
+```
+
+Ví dụ:
+
+```text
+feature/login-ui
+feature/auth-api
+fix/navbar-mobile
+```
+
+---
+
+# 5. Dev Workflow
+
+PO cần yêu cầu dev làm đúng flow:
+
+```text
+pull dev
+↓
+create feature branch
+↓
+code
+↓
+push feature branch
+↓
+create PR → dev
+```
+
+---
+
+# 6. Review PR
+
+PO cần review:
+
+## Functional
+
+* feature chạy đúng chưa?
+* đúng requirement chưa?
+* có bug obvious không?
+
+## Code Scope
+
+* PR có quá to không?
+* có sửa file unrelated không?
+* có conflict tiềm ẩn không?
+
+## Repo Hygiene
+
+* có file rác không?
+* commit message rõ không?
+* naming consistent không?
+
+---
+
+# 7. Merge Strategy
+
+PO chỉ merge khi:
+
+```text
+- feature complete
+- app chạy ổn
+- không conflict
+- scope đúng task
+```
+
+Không merge vì:
+
+```text
+"dev nói xong rồi"
+```
+
+---
+
+# 8. Integration Testing
+
+Sau khi merge vào dev:
+
+PO cần:
+
+```text
+- pull dev mới nhất
+- test toàn app
+- check integration giữa features
+```
+
+Vì:
+
+```text
+feature chạy riêng được
+≠
+integration chạy ổn
+```
+
+---
+
+# 9. Release Flow
+
+Khi dev stable:
+
+```text
+dev
+→ main
+```
+
+Main phải:
+
+```text
+- stable
+- deployable
+- production-ready
+```
+
+---
+
+# 10. PO KHÔNG Nên Làm
+
+## Không giao task mơ hồ
+
+BAD:
+
+```text
+"sửa app đi"
+```
+
+---
+
+## Không để dev push thẳng main
+
+BAD:
+
+```text
+feature → main
+```
+
+---
+
+## Không merge PR khổng lồ
+
+BAD:
+
+```text
+1 PR = 20 feature
+```
+
+---
+
+## Không review chỉ bằng cảm giác
+
+Cần:
+
+```text
+- chạy app
+- test flow
+- đọc file changed
+```
+
+---
+
+## Không để branch diverge
+
+BAD:
+
+```text
+main và dev khác structure lớn
+```
+
+---
+
+# Workflow Chuẩn Cho Repo Owner
+
+# Feature Flow
+
+```text
+Task
+↓
+Collaborator tạo feature branch
+↓
+Push feature branch
+↓
+Tạo PR vào dev
+↓
+Review
+↓
+Merge vào dev
+↓
+Test integration
+↓
+Merge dev → main
+```
+
+---
+
+# Quy Tắc Quan Trọng
+
+## main
+
+```text
+stable
+protected
+release-ready
+```
+
+---
+
+## dev
+
+```text
+integration branch
+```
+
+---
+
+## feature/*
+
+```text
+sandbox riêng cho từng task
+```
+
+---
+
+# Checklist Trước Khi Merge PR
+
+* [ ] Pull được code mới nhất
+* [ ] App chạy được
+* [ ] Không có file rác
+* [ ] Không sửa file unrelated
+* [ ] Commit message rõ ràng
+* [ ] Không conflict với feature khác
+* [ ] Naming consistent
+* [ ] Scope đúng task
+
+---
+
+# Tư Duy Quan Trọng Nhất
+
+Branch khác nhau vì:
+
+```text
+state của feature
+```
+
+KHÔNG phải vì:
+
+```text
+repo structure khác nhau
+```
+
+Repo ổn định lâu dài là:
+
+```text
+workflow đơn giản
++
+branch rõ ràng
++
+PR nhỏ
++
+review kỹ
+```
+
