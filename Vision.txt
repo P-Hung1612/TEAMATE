@@ -1,0 +1,38 @@
+Tên dự án: Trợ giáo - TEAMATE (“Giảm tải cho thầy cô, nâng tầm giáo dục”)
+
+1.1. Tầm nhìn chiến lược
+
+TEAMATE hướng đến trở thành nền tảng duy nhất mà giáo viên Việt Nam cần để quản lý mọi hoạt động giảng dạy và hành chính: từ soạn giáo án, ra đề, chấm bài, quản lý lớp học, giao tiếp với phụ huynh, đến phân tích dữ liệu học tập.
+Trong đó, khả năng hoạt động offline xuất sắc là yếu tố then chốt, giải quyết triệt để bài toán mạng internet không ổn định tại nhiều trường học.
+1.2. Giá trị cốt lõi
+
+    Giảm tải triệt để: Tự động hóa các khâu hành chính lặp đi lặp lại (ghi sổ đầu bài, tổng hợp điểm, báo cáo).
+
+    Siêu tốc và tiện lợi: Soạn giáo án trong vòng 10 phút nhờ kho mẫu thông minh; chấm bài nhanh gấp 3 lần thủ công.
+
+    Offline-first: Mọi tính năng cốt lõi đều hoạt động không cần internet, đồng bộ khi có mạng.
+
+    Phù hợp với chương trình GDPT 2018: Bám sát sách giáo khoa (SGK) và bộ câu hỏi chuẩn.
+
+1.3. Lộ trình sản phẩm (Roadmap)
+Giai đoạn	Tính năng chính	Mục tiêu đo lường
+MVP (3 tháng)	Sổ đầu bài điện tử + Soạn giáo án siêu nhanh (kho mẫu + AI gợi ý) + Chấm bài đơn giản (thang điểm, nhận xét mẫu) + Hoạt động offline hoàn toàn.	50 giáo viên thí điểm, giảm 70% thời gian ghi sổ đầu bài.
+Giai đoạn 2 (6 tháng)	Ngân hàng câu hỏi bám sát SGK (tạo đề tự động) + Chấm bài trắc nghiệm (quét ảnh hoặc nhập đáp án).	500 giáo viên sử dụng, 10.000 đề thi được tạo.
+Giai đoạn 3 (12 tháng)	Quản lý lớp học và giao tiếp (thông báo, nhắn tin, họp phụ huynh trực tuyến) + Phân tích dữ liệu học tập (biểu đồ tiến bộ, cảnh báo sớm).	Triển khai tại 200 trường trên toàn quốc, kết nối phụ huynh.
+1.4. Các bên liên quan chính
+
+    Giáo viên (người dùng cuối): Được giảm tải, tiết kiệm thời gian.
+
+    Hiệu trưởng / Tổ trưởng: Giám sát chất lượng giảng dạy qua báo cáo tự động.
+
+    Sở GD&ĐT: Đối tác triển khai B2B, cung cấp nguồn ngân sách.
+
+    Phụ huynh (giai đoạn sau): Nhận thông tin kịp thời về con em.
+
+1.5. Ràng buộc cấp cao
+
+    Offline-first: 100% tính năng MVP phải chạy được khi không có internet (trừ đồng bộ đa thiết bị).
+
+    Chi phí thấp: Hoạt động trên máy tính cấu hình tối thiểu (2GB RAM, Windows 7/10 hoặc Chromebook).
+
+    Bảo mật: Dữ liệu giáo viên và học sinh được mã hóa cục bộ, chỉ đồng bộ khi có mạng và được xác thực.

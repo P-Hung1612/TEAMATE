@@ -1,0 +1,42 @@
+2. Tài liệu Yêu cầu Nghiệp vụ (BRD – Business Requirements Document)
+
+Phiên bản: 1.0 (cho MVP và tầm nhìn mở rộng)
+Ngày: 15/05/2026
+2.1. Mục tiêu nghiệp vụ (đo lường được)
+Mã	Mục tiêu	Chỉ số thành công
+BR‑GOAL1	Giảm thời gian ghi chép sổ đầu bài hàng ngày	Từ 15 phút/lớp xuống còn 3 phút/lớp (giảm 80%)
+BR‑GOAL2	Rút ngắn thời gian soạn giáo án	Từ 90 phút/bài xuống 15 phút/bài (nhờ mẫu và gợi ý)
+BR‑GOAL3	Tăng tốc độ chấm bài tự luận (có rubric)	Chấm 1 bài từ 3 phút xuống 1 phút (có sẵn nhận xét mẫu)
+BR‑GOAL4	Tỷ lệ giáo viên sử dụng offline thành công	100% người dùng MVP có thể làm việc trong 8 giờ liên tục không cần kết nối mạng
+2.2. Yêu cầu chức năng (theo từng phân hệ – ưu tiên MVP)
+2.2.1. Phân hệ Sổ đầu bài điện tử (MVP – Must have)
+Mã	Mô tả	Ghi chú 
+BR‑F01	Giáo viên có thể ghi nội dung từng tiết học (ngày, tiết, môn, bài dạy, ghi chú) vào sổ đầu bài điện tử.	Offline, lưu cục bộ.
+BR‑F02	Tự động sinh sổ đầu bài theo mẫu của Bộ GD&ĐT (dạng bảng, có thể in hoặc xuất Excel).	Khi có mạng mới tải mẫu lần đầu.
+BR‑F03	Hỗ trợ điểm danh học sinh vắng mặt (có mặt, vắng phép, vắng không phép) và ghi chú.	Offline, đồng bộ sau.
+BR‑F04	Tổng hợp báo cáo chuyên cần theo tuần/tháng (số buổi vắng, tỷ lệ chuyên cần).
+2.2.2. Phân hệ Soạn giáo án siêu nhanh (MVP – Must have)
+Mã	Mô tả	Ghi chú
+BR‑F05	Cung cấp trình soạn thảo giáo án theo khung mẫu Công văn 5512 (mục tiêu, phương pháp, tiến trình dạy học, đánh giá).	Offline.
+BR‑F06	Kho giáo án mẫu được cài sẵn (tối thiểu 50 bài cho mỗi môn cấp THCS, THPT), cho phép sao chép và chỉnh sửa.	Dữ liệu offline (JSON hoặc SQLite).
+BR‑F07	Soạn giáo án siêu nhanh: Gợi ý nội dung dựa trên từ khóa môn/lớp/bài học (cơ chế gợi ý đơn giản dựa trên kho mẫu, không cần AI phức tạp).
+BR‑F08	Xuất giáo án ra file Word (.docx) và PDF để in hoặc gửi.
+2.2.3. Phân hệ Chấm bài đơn giản (MVP – Must have)
+Mã	Mô tả	Ghi chú
+BR‑F09	Cho phép tạo rubric (thang điểm chi tiết) cho bài tự luận, ví dụ: Nội dung (6đ), Hình thức (2đ), Sáng tạo (2đ).	Offline, lưu rubric dưới dạng mẫu.
+BR‑F10	Nhập điểm cho từng học sinh theo rubric, hệ thống tự động tính tổng điểm và ghi nhận xét mẫu (dựa trên mức điểm).
+BR‑F11	Hỗ trợ chấm bài trắc nghiệm đơn giản bằng cách nhập đáp án (A/B/C/D) và so sánh với đáp án đúng do giáo viên nhập sẵn.	Phiên bản offline, không quét ảnh.
+BR‑F12	Lưu lại lịch sử chấm bài, có thể sửa điểm, in bảng điểm cá nhân hoặc cả lớp.
+2.2.4. Các tính năng sẽ phát triển sau MVP
+Phân hệ	Tính năng (không yêu cầu trong tài liệu này)
+Ngân hàng câu hỏi bám sát SGK	Nhập câu hỏi theo ma trận, lọc theo năng lực, tạo đề tự động.
+Chấm bài tự động nâng cao	Nhận dạng chữ viết tay, quét ảnh bài trắc nghiệm.
+Quản lý lớp học & giao tiếp	Tin nhắn, thông báo push, họp trực tuyến tích hợp.
+Phân tích dữ liệu & báo cáo	Dashboard tiến bộ học sinh, dự báo nguy cơ rớt môn.
+2.3. Yêu cầu phi chức năng (tập trung vào MVP)
+Mã	Yêu cầu	Mô tả
+BR‑NFR1	Offline-first	Toàn bộ tính năng MVP phải hoạt động cục bộ khi mất internet. Dữ liệu được lưu trữ trên máy tính (IndexedDB hoặc SQLite).
+BR‑NFR2	Đồng bộ thông minh	Khi có mạng, dữ liệu từ nhiều thiết bị của cùng giáo viên (máy tính ở trường, laptop ở nhà) được đồng bộ tự động, giải quyết xung đột theo quy tắc "ghi sau thắng" hoặc thủ công.
+BR‑NFR3	Hiệu năng	Mở ứng dụng dưới 3 giây, chuyển trang dưới 1 giây trên máy 4GB RAM, HDD.
+BR‑NFR4	Dung lượng lưu trữ	Hỗ trợ lưu dữ liệu tối thiểu 5000 học sinh và 10.000 giáo án (khoảng 500MB).
+BR‑NFR5	Bảo mật	Mỗi giáo viên có mật khẩu mã hóa để mở ứng dụng; dữ liệu được mã hóa AES-256 cục bộ.

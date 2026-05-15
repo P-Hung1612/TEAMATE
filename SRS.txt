@@ -1,0 +1,179 @@
+3. Tài liệu Đặc tả Yêu cầu Phần mềm (SRS – Software Requirements Specification)
+
+Phiên bản: 1.0 (cho MVP – Sổ đầu bài + Soạn giáo án siêu nhanh + Chấm bài đơn giản, offline-first)
+Ngày: 15/05/2026
+3.1. Kiến trúc tổng quan (MVP)
+
+    Loại ứng dụng: Ứng dụng web tiến bộ (PWA – Progressive Web App), cài đặt trên máy tính và hoạt động offline.
+
+    Công nghệ đề xuất:
+
+        Frontend: React + TypeScript
+
+        Lưu trữ offline: IndexedDB (qua Dexie.js) hoặc SQLite (qua sql.js)
+
+        Đồng bộ: Khi online, gọi REST API đến server (Node.js + PostgreSQL) để đồng bộ dữ liệu.
+
+        Build: Vite / Webpack, tạo service worker cho PWA.
+
+    Yêu cầu phần cứng tối thiểu: CPU 2 nhân, RAM 2GB, 500MB ổ cứng trống, Windows/Linux/macOS (qua Chrome/Edge).
+
+3.2. Mô hình dữ liệu offline (các store chính)
+typescript
+
+// Sử dụng IndexedDB
+interface User {
+  id: string;
+  name: string;
+  role: "teacher";
+  school: string;
+}
+
+interface Class {
+  id: string;
+  name: string; // "10A1"
+  academicYear: string;
+  gradeLevel: number; // 10,11,12
+  studentList: Student[];
+}
+
+interface Student {
+  id: string;
+  fullName: string;
+  gender: string;
+  birthDate: string;
+  parentPhone?: string;
+}
+
+// Sổ đầu bài - mỗi tiết học
+interface LessonLog {
+  id: string;
+  classId: string;
+  date: string; // YYYY-MM-DD
+  period: number; // tiết 1,2,...
+  subject: string;
+  topic: string; // bài dạy
+  attendance: { studentId: string; status: "present" | "absent_permitted" | "absent_unpermitted" }[];
+  notes: string;
+  syncStatus: "synced" | "pending" | "conflict";
+}
+
+// Giáo án
+interface LessonPlan {
+  id: string;
+  subject: string;
+  gradeLevel: number;
+  topic: string;
+  objectives: string; // mục tiêu
+  methods: string;
+  steps: string; // tiến trình dạy học (HTML)
+  assessment: string;
+  createdAt: Date;
+  updatedAt: Date;
+  fromTemplateId?: string;
+}
+
+// Rubric chấm bài
+interface Rubric {
+  id: string;
+  name: string;
+  criteria: { name: string; maxScore: number }[];
+}
+
+// Điểm chấm theo rubric
+interface GradingRecord {
+  id: string;
+  classId: string;
+  assignmentName: string;
+  rubricId: string;
+  scores: { studentId: string; criterionScores: number[]; total: number; comment: string }[];
+  date: Date;
+}
+
+3.3. Yêu cầu chức năng chi tiết (cho MVP)
+Module 1: Sổ đầu bài điện tử
+
+    SRS‑F01: Giao diện hiển thị lịch tuần (hoặc tháng) của một lớp, mỗi ô là một tiết học. Cho phép nhấn vào tiết để mở form nhập liệu.
+
+    SRS‑F02: Form nhập/sửa tiết học bao gồm: môn học (dropdown tự điền), tên bài dạy (text), ghi chú (textarea), danh sách học sinh với checkbox điểm danh (có 3 trạng thái).
+
+    SRS‑F03: Tự động tính vắng và lưu vào chỉ số chuyên cần của từng học sinh (tích lũy).
+
+    SRS‑F04: Xuất báo cáo sổ đầu bài dạng bảng (HTML) để in, hoặc xuất file Excel (xlsx) với định dạng giống mẫu Bộ.
+
+    SRS‑F05: Tất cả dữ liệu được lưu vào IndexedDB ngay sau mỗi thao tác (auto-save), không cần nút Lưu riêng.
+
+Module 2: Soạn giáo án siêu nhanh
+
+    SRS‑F06: Trình soạn thảo rich text (dựa trên Quill hoặc TipTap) với các công cụ cơ bản (in đậm, nghiêng, căn lề, chèn bảng, chèn ảnh từ máy).
+
+    SRS‑F07: Các khung soạn thảo được bố trí sẵn theo mẫu 5512 (có thể cuộn và điền).
+
+    SRS‑F08: Kho giáo án mẫu offline được lưu dưới dạng JSON, có giao diện tìm kiếm theo môn/lớp/từ khóa. Khi chọn một mẫu, nội dung được sao chép vào trình soạn thảo (bản nháp mới).
+
+    SRS‑F09: Tính năng "Soạn siêu nhanh": Người dùng gõ tên bài học (ví dụ "Phương trình bậc hai"), hệ thống tìm kiếm trong kho mẫu và hiển thị 3-5 gợi ý nội dung phần mục tiêu, phương pháp, tiến trình. Giáo viên có thể nhấn "Áp 
+dụng" để chèn vào các khung tương ứng.
+
+    SRS‑F10: Xuất giáo án ra file .docx (dùng thư viện docx-templates) và .pdf (qua html2pdf hoặc dịch vụ local).
+
+Module 3: Chấm bài đơn giản
+
+    SRS‑F11: Cho phép tạo rubric (thang điểm) mới với tên và các tiêu chí, mỗi tiêu chí có tên và điểm tối đa. Lưu rubric vào IndexedDB.
+
+    SRS‑F12: Giao diện chấm bài: chọn lớp, chọn rubric đã tạo. Hiển thị danh sách học sinh, mỗi học sinh có các slider hoặc input số cho từng tiêu chí, tự động tính tổng và đề xuất nhận xét (dựa trên tổng điểm: 0-40%: "Cần cố gắng", 
+40-70%: "Đạt", 70-100%: "Tốt").
+
+    SRS‑F13: Lưu kết quả chấm bài theo từng đợt (assignment). Có thể sửa sau.
+
+    SRS‑F14: Chấm trắc nghiệm đơn giản: giáo viên nhập ma trận đáp án đúng (dạng A,B,C,D) cho một đề gồm N câu. Nhập điểm từng học sinh bằng cách chọn đáp án từng câu, hệ thống so sánh với đáp án đúng, tính điểm (mỗi câu = 10/N 
+điểm). Lưu lại.
+
+    SRS‑F15: In bảng điểm của một bài chấm (gồm cột học sinh, điểm chi tiết, tổng điểm, nhận xét).
+
+3.4. Yêu cầu về offline và đồng bộ
+
+    SRS‑O01: Ứng dụng phải cài được trên máy tính như một PWA (người dùng truy cập URL, trình duyệt đề xuất "Cài đặt ứng dụng").
+
+    SRS‑O02: Service worker cache tất cả tài nguyên tĩnh (HTML, CSS, JS, hình ảnh) để mở ứng dụng mà không cần mạng.
+
+    SRS‑O03: Mỗi bản ghi (LessonLog, LessonPlan, GradingRecord) có trường syncStatus (synced/pending/conflict). Khi có mạng, ứng dụng gửi các bản ghi pending lên server qua API POST/PUT.
+
+    SRS‑O04: Server định danh mỗi giáo viên qua tài khoản (đăng nhập lần đầu bắt buộc có mạng để xác thực, sau đó lưu token và hoạt động offline được). Dữ liệu offline được gắn với ID giáo viên.
+
+    SRS‑O05: Nếu xảy ra xung đột (cùng một bản ghi được sửa trên hai thiết bị offline), hệ thống lưu cả hai bản và hiển thị giao diện chọn phiên bản hoặc hợp nhất thủ công (giáo viên tự quyết định).
+
+3.5. Yêu cầu phi chức năng kỹ thuật
+
+    SRS‑NFR1: Khởi động ứng dụng lần đầu (sau cài đặt) dưới 5 giây, các lần sau dưới 2 giây.
+
+    SRS‑NFR2: Thao tác nhập liệu (chọn dropdown, nhập text) có phản hồi dưới 200ms.
+
+    SRS‑NFR3: Dữ liệu offline khi đạt 500 học sinh + 200 giáo án + 1000 bản ghi điểm không chiếm quá 300MB.
+
+    SRS‑NFR4: Giao diện thân thiện với người lớn tuổi: font chữ tối thiểu 14px, độ tương phản cao, có thể phóng to giao diện.
+
+    SRS‑NFR5: Mã hóa cục bộ: sử dụng Web Crypto API để mã hóa dữ liệu nhạy cảm (tên học sinh, số điện thoại) trước khi lưu vào IndexedDB. Giải mã khi hiển thị.
+
+3.6. Ràng buộc kỹ thuật cho MVP
+
+    Không sử dụng AI/ML phức tạp, chỉ dùng đối sánh mẫu đơn giản.
+
+    Không yêu cầu máy chủ đồng bộ trong giai đoạn thử nghiệm offline đơn lẻ (có thể bỏ qua đồng bộ nếu chỉ một thiết bị).
+
+    Tất cả các mẫu giáo án và rubric ban đầu được nhúng sẵn vào ứng dụng (dưới dạng JSON tĩnh).
+
+    Không cần xác thực khi dùng offline (vì ứng dụng cài đặt trên máy cá nhân của giáo viên, nhưng có thể cài đặt mật khẩu mở ứng dụng tùy chọn).
+
+3.7. Các luồng chính (User Stories cho MVP)
+
+    Giáo viên A muốn ghi sổ đầu bài cho lớp 10A1 tiết 3 ngày 15/5:
+
+        Mở ứng dụng → Chọn lớp → Chọn ngày 15/5 → Chọn tiết 3 → Nhập môn Toán, bài "Phương trình bậc hai" → Điểm danh (vắng 2 học sinh) → Ghi chú "Kiểm tra miệng" → Tự động lưu → Xem lại sổ đầu bài tuần đã có dữ liệu.
+
+    Giáo viên B muốn soạn giáo án mới:
+
+        Nhấn "Soạn giáo án" → Chọn môn Văn, lớp 10 → Gõ tên bài "Chiều tối" → Nhấn "Gợi ý siêu nhanh" → Hệ thống đề xuất mục tiêu và tiến trình → Giáo viên chỉnh sửa → Lưu → Xuất Word.
+
+    Giáo viên C chấm bài kiểm tra tự luận:
+
+        Tạo rubric "Viết đoạn văn" (Nội dung 4đ, Hình thức 3đ, Sáng tạo 3đ) → Chọn lớp → Lần lượt nhập điểm cho 40 học sinh (gõ số, Enter chuyển học sinh tiếp theo) → Tổng điểm tự động → Lưu → In bảng điểm.
