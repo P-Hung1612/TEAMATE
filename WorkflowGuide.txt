@@ -1,0 +1,462 @@
+# Hướng Dẫn Workflow Git Cho Collaborator
+
+## Mục tiêu
+
+Collaborator KHÔNG code trực tiếp trên:
+
+* `main`
+* `dev`
+
+Collaborator chỉ làm việc trên:
+
+```text
+feature/*
+fix/*
+```
+
+Sau đó tạo Pull Request vào `dev`.
+
+---
+
+# Flow Tổng Quan
+
+```text
+1. Lấy code mới nhất từ dev
+↓
+2. Tạo feature branch mới
+↓
+3. Code feature
+↓
+4. Commit code
+↓
+5. Push feature branch
+↓
+6. Tạo Pull Request vào dev
+↓
+7. Chờ review + merge
+```
+
+---
+
+# 1. Lấy code mới nhất
+
+Luôn bắt đầu từ branch `dev`.
+
+```bash
+git checkout dev
+```
+
+```bash
+git pull origin dev
+```
+
+## Chuyện gì đang xảy ra?
+
+* `git checkout dev`
+
+  * chuyển sang branch `dev`
+
+* `git pull origin dev`
+
+  * lấy code mới nhất từ GitHub
+
+## Tại sao phải làm?
+
+Để feature branch mới được tạo từ code mới nhất.
+
+Nếu bỏ qua bước này:
+
+* dễ conflict
+* code bị cũ
+* merge khó hơn
+
+---
+
+# 2. Tạo Feature Branch
+
+## Quy tắc đặt tên
+
+### Feature mới
+
+```text
+feature/<ten-feature>
+```
+
+Ví dụ:
+
+```text
+feature/login-ui
+feature/navbar
+feature/todo-create
+```
+
+### Bug fix
+
+```text
+fix/<ten-bug>
+```
+
+Ví dụ:
+
+```text
+fix/login-error
+fix/mobile-navbar
+```
+
+---
+
+## Tạo branch
+
+Ví dụ:
+
+```bash
+git checkout -b feature/login-ui
+```
+
+## Chuyện gì đang xảy ra?
+
+Git tạo branch mới:
+
+```text
+feature/login-ui
+```
+
+và tự chuyển sang branch đó.
+
+## Tại sao phải tạo feature branch?
+
+Mỗi feature phải được tách riêng để:
+
+* không phá code team
+* dễ review
+* dễ rollback
+* merge độc lập
+
+---
+
+# 3. Code Feature
+
+Ví dụ:
+
+```text
+Làm giao diện login
+```
+
+Code chỉ trong feature branch hiện tại.
+
+KHÔNG:
+
+```text
+- sửa feature khác
+- refactor lung tung
+- thêm nhiều chức năng không liên quan
+```
+
+---
+
+# 4. Commit Code
+
+## Add file
+
+```bash
+git add .
+```
+
+## Commit
+
+```bash
+git commit -m "feat: create login form ui"
+```
+
+---
+
+# Quy tắc commit message
+
+## Feature
+
+```text
+feat: create login form
+feat: add navbar
+```
+
+## Fix bug
+
+```text
+fix: validate empty password
+fix: mobile navbar overflow
+```
+
+## Refactor
+
+```text
+refactor: extract auth service
+```
+
+---
+
+# 5. Push Feature Branch
+
+```bash
+git push origin feature/login-ui
+```
+
+## Chuyện gì đang xảy ra?
+
+GitHub sẽ tạo remote branch:
+
+```text
+feature/login-ui
+```
+
+## Tại sao push branch riêng?
+
+Để:
+
+* không ảnh hưởng `dev`
+* có thể review riêng
+* có thể tạo PR
+
+---
+
+# 6. Tạo Pull Request
+
+Sau khi push xong:
+
+GitHub sẽ hiện nút:
+
+```text
+Compare & pull request
+```
+
+Click vào.
+
+---
+
+## Base branch
+
+```text
+dev
+```
+
+## Compare branch
+
+```text
+feature/login-ui
+```
+
+Nghĩa là:
+
+```text
+Xin merge feature/login-ui vào dev
+```
+
+---
+
+## PR Title
+
+Ví dụ:
+
+```text
+feat: create login ui
+```
+
+---
+
+## PR Description
+
+Ví dụ:
+
+```text
+- create login form
+- add email/password input
+- responsive mobile layout
+```
+
+---
+
+## Create PR
+
+Click:
+
+```text
+Create pull request
+```
+
+---
+
+# 7. Sau Khi Tạo PR
+
+Maintainer sẽ:
+
+* review code
+* test feature
+* comment nếu cần sửa
+* merge vào `dev`
+
+Collaborator KHÔNG tự merge.
+
+---
+
+# Quy Tắc Quan Trọng
+
+## 1 Feature = 1 Branch
+
+GOOD:
+
+```text
+feature/login-ui
+feature/navbar
+feature/auth-api
+```
+
+BAD:
+
+```text
+feature/all
+```
+
+---
+
+# 1 PR = 1 Mục Tiêu
+
+GOOD:
+
+```text
+PR chỉ làm login UI
+```
+
+BAD:
+
+```text
+login + navbar + dark mode + api
+```
+
+---
+
+# Không Code Trực Tiếp Trên dev/main
+
+KHÔNG:
+
+```bash
+git checkout dev
+```
+
+rồi code trực tiếp.
+
+Luôn:
+
+```text
+dev
+↓
+create feature branch
+↓
+code trong feature branch
+```
+
+---
+
+# Workflow Chuẩn
+
+```text
+main
+└── dev
+    ├── feature/login-ui
+    ├── feature/navbar
+    └── feature/todo-create
+```
+
+---
+
+# Workflow Hằng Ngày
+
+## Bắt đầu làm việc
+
+```bash
+git checkout dev
+git pull origin dev
+git checkout -b feature/<feature-name>
+```
+
+---
+
+## Trong lúc code
+
+```bash
+git add .
+git commit -m "feat: ..."
+```
+
+---
+
+## Đẩy code lên GitHub
+
+```bash
+git push origin feature/<feature-name>
+```
+
+---
+
+## Tạo Pull Request
+
+```text
+feature/<feature-name>
+→ dev
+```
+
+---
+
+# Ví Dụ Hoàn Chỉnh
+
+## Task
+
+```text
+Làm login UI
+```
+
+## Flow
+
+```bash
+git checkout dev
+```
+
+```bash
+git pull origin dev
+```
+
+```bash
+git checkout -b feature/login-ui
+```
+
+Code feature.
+
+```bash
+git add .
+```
+
+```bash
+git commit -m "feat: create login ui"
+```
+
+```bash
+git push origin feature/login-ui
+```
+
+Sau đó tạo:
+
+```text
+PR: feature/login-ui → dev
+```
+
+---
+
+# Checklist Trước Khi Tạo PR
+
+## Kiểm tra:
+
+* [ ] Đã pull dev mới nhất
+* [ ] Đúng feature branch
+* [ ] App chạy được
+* [ ] Không có file rác
+* [ ] Commit message rõ ràng
+* [ ] Chỉ chứa đúng feature được giao
+
