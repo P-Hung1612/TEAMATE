@@ -2,9 +2,15 @@
   "name": "teamate-monorepo",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "kernel",
+    "plugins/*",
+    "app",
+    "server"
+  ],
   "scripts": {
-    "dev": "pnpm --filter app run dev",
-    "build": "pnpm -r run build",
-    "test": "pnpm -r run test"
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
   }
 }

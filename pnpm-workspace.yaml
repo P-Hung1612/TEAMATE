@@ -1,5 +1,0 @@
-packages:
-  - 'kernel'
-  - 'plugins/*'
-  - 'app'
-  - 'server'
