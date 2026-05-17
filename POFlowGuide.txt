@@ -1,0 +1,65 @@
+# HƯỚNG DẪN QUY TRÌNH LÀM VIỆC DÀNH CHO PRODUCT OWNER / MAINTAINER
+
+Tài liệu này định nghĩa các bước thao tác chuẩn mực dành riêng cho bạn (người đóng vai trò là Product Owner / Maintainer của dự án) để quản lý code, duyệt Pull Request và quản lý các bản phát hành (Releases).
+
+---
+
+## 1. QUY TRÌNH DUYỆT PULL REQUEST (TỪ COLLABORATOR)
+
+Khi một Collaborator hoàn thành một tính năng ở nhánh `feature/*` và tạo Pull Request (PR) xin gộp vào nhánh `dev`:
+
+1. **Kiểm tra trực quan (Review):**
+   - Vào tab "Files changed" trên GitHub.
+   - Kiểm tra xem họ có vi phạm Đạo luật 1 (viết logic vào Kernel) hay không.
+   - Đảm bảo không có code rác (`console.log`, comment thừa).
+2. **Yêu cầu sửa đổi (Nếu cần):**
+   - Nếu code chưa đạt, chọn "Request changes", để lại bình luận và yêu cầu Dev sửa. Dev sẽ tự push thêm commit, PR sẽ tự động cập nhật.
+3. **Chấp nhận (Approve & Merge):**
+   - Nếu mọi thứ hoàn hảo, chọn "Approve" và bấm nút gộp (Merge) vào nhánh `dev`.
+4. **Cập nhật máy cá nhân:**
+   - Sau khi merge trên Web, hãy mở terminal ở máy tính của bạn chạy:
+     `git checkout dev`
+     `git pull origin dev`
+
+---
+
+## 2. QUY TRÌNH PHÁT HÀNH (RELEASE) TỪ DEV LÊN MAIN
+
+Nhánh `dev` là nơi tích hợp các tính năng mới và dùng để test tổng thể. Khi bạn thấy code trên `dev` đã hoạt động đủ tốt (ví dụ: hoàn thiện các tính năng của bản MVP) và sẵn sàng tung ra cho người dùng:
+
+**Bước 1:** Chuyển sang nhánh thiêng liêng nhất (`main`)
+`git checkout main`
+
+**Bước 2:** Cập nhật `main` (Phòng trường hợp có ai đó vừa đẩy code)
+`git pull origin main`
+
+**Bước 3:** Kéo toàn bộ code từ `dev` gộp vào `main`
+`git merge dev`
+
+**Bước 4:** Đẩy code đã gộp lên lại GitHub
+`git push origin main`
+
+**Bước 5:** (Khuyên dùng) Đánh dấu phiên bản (Tag)
+`git tag -a v1.0.0-MVP -m "Release bản MVP đầu tiên"`
+`git push origin v1.0.0-MVP`
+
+---
+
+## 3. QUY TRÌNH XỬ LÝ LỖI KHẨN CẤP (HOTFIX)
+
+Khi sản phẩm đang chạy ổn định trên nhánh `main` nhưng người dùng báo lỗi nghiêm trọng (crash app):
+
+**Bước 1:** Tạo nhánh sửa lỗi trực tiếp từ `main` (không tạo từ `dev` vì `dev` có thể đang chứa các tính năng làm dở).
+`git checkout main`
+`git checkout -b hotfix/loi-nghiem-trong`
+
+**Bước 2:** Sửa lỗi, test kỹ và Commit.
+
+**Bước 3:** Gộp bản vá lỗi này vào CẢ `main` VÀ `dev` để đảm bảo lỗi đã bị triệt tiêu hoàn toàn:
+`git checkout main`
+`git merge hotfix/loi-nghiem-trong`
+`git checkout dev`
+`git merge hotfix/loi-nghiem-trong`
+
+**Bước 4:** Xóa nhánh hotfix đi cho sạch.
+`git branch -d hotfix/loi-nghiem-trong`
