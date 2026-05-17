@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "description": "The micro-kernel for TEAMATE",
   "main": "src/api/index.ts",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "dexie": "^4.0.1"
+  }
 }
