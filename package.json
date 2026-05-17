@@ -1,0 +1,10 @@
+{
+  "name": "teamate-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter app run dev",
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test"
+  }
+}
