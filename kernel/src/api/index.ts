@@ -2,6 +2,7 @@ import { DocumentNode } from './types';
 
 export * from './types';
 export * from './mock';
+export * from './realkernel';
 
 /**
  * Hợp đồng giao tiếp (Interface) giữa Lõi (Kernel) và Các Module Nghiệp vụ (Plugins).
