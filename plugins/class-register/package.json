@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "@teamate/kernel": "*",
+    "lucide-react": "^0.475.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
